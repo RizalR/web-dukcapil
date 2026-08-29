@@ -1,5 +1,6 @@
 @extends('layouts.public')
 @section('title', 'Profil Dinas')
+@section('meta_description', 'Profil Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo, tugas, fungsi, dan informasi kedinasan.')
 @section('content')
 <section class="bg-sky-soft"><div class="container-page py-14"><p class="eyebrow">Profil pemerintah</p><h1 class="page-title mt-3">Dukcapil Kabupaten Gorontalo</h1><p class="mt-5 max-w-3xl text-lg leading-8">Perangkat daerah yang melaksanakan urusan pemerintahan di bidang administrasi kependudukan dan pencatatan sipil.</p></div></section>
 <section class="container-page grid gap-6 py-14 lg:grid-cols-2"><article class="card p-7"><p class="eyebrow">Visi Kabupaten</p><h2 class="mt-4 text-2xl font-bold leading-9 text-ink">“Restorasi Kabupaten Gorontalo Berkemajuan dan Berkelanjutan.”</h2></article><article class="card p-7"><p class="eyebrow">Misi Kabupaten</p><ol class="mt-4 space-y-4 text-sm leading-6"><li><strong class="text-ink">01.</strong> Membangun sumber daya yang beragama, berbudaya, unggul, dan kompetitif.</li><li><strong class="text-ink">02.</strong> Mentransformasi ekonomi kerakyatan berbasis teknologi, berorientasi nilai tambah, dan berkelanjutan.</li><li><strong class="text-ink">03.</strong> Mewujudkan reformasi tata kelola pemerintahan yang baik.</li></ol></article></section>

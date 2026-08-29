@@ -1,5 +1,6 @@
 @extends('layouts.public')
 @section('title', 'Dokumen Publik')
+@section('meta_description', 'Dokumen publik, regulasi, dan bahan informasi resmi Dukcapil Kabupaten Gorontalo.')
 @section('content')
 <section class="container-page py-14"><p class="eyebrow">Transparansi informasi</p><h1 class="page-title mt-3">Dokumen publik</h1><p class="mt-4 max-w-3xl text-lg leading-8">Standar pelayanan, janji dan maklumat pelayanan, pakta integritas, regulasi, Renja, serta Renstra tersedia melalui daftar berikut.</p><div class="mt-10 space-y-10">@forelse($documents as $category => $items)<section><h2 class="text-xl font-bold text-ink">{{ $category }}</h2><div class="mt-4 grid gap-4 md:grid-cols-2">@foreach($items as $document)<article class="card p-6"><div class="flex items-start justify-between gap-4"><div><h3 class="font-bold text-ink">{{ $document->title }}</h3><p class="mt-2 text-sm leading-6">{{ $document->description }}</p></div><span class="rounded-lg bg-sky-soft px-2 py-1 text-xs font-bold text-ocean">{{ $document->year }}</span></div><a href="{{ $document->url }}" target="_blank" rel="noopener noreferrer" class="mt-5 inline-block text-sm font-bold text-ocean">Buka dokumen ↗</a></article>@endforeach</div></section>@empty<div class="card p-8 text-center">Dokumen belum diterbitkan.</div>@endforelse</div></section>
 @endsection

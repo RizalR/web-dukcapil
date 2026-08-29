@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /masuk
+Disallow: /pencarian
+
+Sitemap: https://dukcapil.gorontalokab.go.id/sitemap.xml

@@ -1,5 +1,6 @@
 @extends('layouts.public')
 @section('title', 'Profil Pegawai')
+@section('meta_description', 'Profil kedinasan pegawai Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo.')
 @section('content')
 <section class="container-page py-14">
     <p class="eyebrow">Sumber daya manusia</p>

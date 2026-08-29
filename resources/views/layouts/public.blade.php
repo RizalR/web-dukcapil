@@ -1,10 +1,54 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    @php
+        $siteUrl = rtrim((string) config('dukcapil.public_url'), '/');
+        $pageTitle = trim($__env->yieldContent('title', 'Beranda')).' — Dukcapil Kabupaten Gorontalo';
+        $metaDescription = trim($__env->yieldContent('meta_description', (string) config('dukcapil.seo.description')));
+        $canonicalUrl = trim($__env->yieldContent('canonical_url')) ?: $siteUrl.(request()->getPathInfo() === '/' ? '/' : request()->getPathInfo());
+        $robots = trim($__env->yieldContent('robots', 'index,follow,max-image-preview:large'));
+        $openGraphType = trim($__env->yieldContent('og_type', 'website'));
+        $socialImage = (string) config('dukcapil.seo.social_image');
+        $organizationSchema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'GovernmentOrganization',
+            'name' => config('dukcapil.name'),
+            'url' => $siteUrl.'/',
+            'logo' => $siteUrl.'/images/logo_kabgor.png',
+            'email' => config('dukcapil.office.email'),
+            'telephone' => config('dukcapil.office.phone'),
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => config('dukcapil.office.address'),
+                'addressLocality' => 'Limboto',
+                'addressRegion' => 'Gorontalo',
+                'postalCode' => '96212',
+                'addressCountry' => 'ID',
+            ],
+        ];
+    @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="@yield('meta_description', 'Portal informasi publik Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo.')">
-    <title>@yield('title', 'Beranda') — Dukcapil Kabupaten Gorontalo</title>
+    <meta name="description" content="{{ $metaDescription }}">
+    <meta name="robots" content="{{ $robots }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:type" content="{{ $openGraphType }}">
+    <meta property="og:site_name" content="Dukcapil Kabupaten Gorontalo">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:image" content="{{ $socialImage }}">
+    <meta property="og:image:alt" content="Dinas Dukcapil Kabupaten Gorontalo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $socialImage }}">
+    @hasSection('article_published_time')
+        <meta property="article:published_time" content="@yield('article_published_time')">
+    @endif
+    <title>{{ $pageTitle }}</title>
+    <script type="application/ld+json" nonce="{{ Illuminate\Support\Facades\Vite::cspNonce() }}">{!! json_encode($organizationSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen">

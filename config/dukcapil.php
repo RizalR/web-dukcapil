@@ -3,7 +3,12 @@
 return [
     'name' => 'Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo',
     'short_name' => 'Dukcapil Kab. Gorontalo',
+    'public_url' => env('DUKCAPIL_PUBLIC_URL', 'https://dukcapil.gorontalokab.go.id'),
     'service_url' => env('DUKCAPIL_SERVICE_URL', 'https://siprima.gorontalokab.go.id/'),
+    'seo' => [
+        'description' => 'Portal informasi resmi Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo.',
+        'social_image' => env('DUKCAPIL_SOCIAL_IMAGE', 'https://dukcapil.gorontalokab.go.id/images/dukcapil_.jpeg'),
+    ],
     'uploads' => [
         'image_max_kilobytes' => 1024,
     ],

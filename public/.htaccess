@@ -5,6 +5,13 @@
 
     RewriteEngine On
 
+    # Enforce HTTPS only for the production hostname. Cloudflare may already
+    # send the original scheme through X-Forwarded-Proto.
+    RewriteCond %{HTTP_HOST} ^dukcapil\.gorontalokab\.go\.id$ [NC]
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+    RewriteRule ^ https://dukcapil.gorontalokab.go.id%{REQUEST_URI} [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

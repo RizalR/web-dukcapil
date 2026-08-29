@@ -1,5 +1,6 @@
 @extends('layouts.public')
 @section('title', 'Aplikasi Pegawai')
+@section('meta_description', 'Daftar tautan aplikasi resmi untuk pegawai Dukcapil Kabupaten Gorontalo.')
 @section('content')
 <section class="container-page py-14"><p class="eyebrow">Tautan internal</p><h1 class="page-title mt-3">Aplikasi pegawai</h1><p class="mt-4 max-w-3xl text-lg leading-8">Akses cepat ke aplikasi kerja pemerintah. Setiap tautan akan terbuka pada situs pengelola masing-masing.</p><div class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">@forelse($links as $link)<a href="{{ $link->url }}" target="_blank" rel="noopener noreferrer" class="card group p-6 transition hover:-translate-y-1 hover:border-ocean hover:shadow-lg"><div class="flex items-start justify-between"><span class="grid size-11 place-items-center rounded-xl bg-sky-soft font-black text-ocean">{{ str($link->name)->substr(0,2)->upper() }}</span><span class="text-ocean">↗</span></div><h2 class="mt-5 text-xl font-bold text-ink group-hover:text-ocean">{{ $link->name }}</h2><p class="mt-2 text-sm leading-6">{{ $link->description }}</p></a>@empty<div class="card col-span-full p-8 text-center">Tautan aplikasi belum tersedia.</div>@endforelse</div></section>
 @endsection

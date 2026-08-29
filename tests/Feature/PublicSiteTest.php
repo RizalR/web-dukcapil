@@ -123,7 +123,7 @@ class PublicSiteTest extends TestCase
 
         $this->assertIsString($contentSecurityPolicy);
         $this->assertSame(1, preg_match("/'nonce-([^']+)'/", $contentSecurityPolicy, $nonceMatches));
-        $this->assertSame(1, preg_match_all('/<script\\b([^>]*)>/i', $response->getContent(), $scriptMatches));
+        $this->assertGreaterThanOrEqual(1, preg_match_all('/<script\\b([^>]*)>/i', $response->getContent(), $scriptMatches));
 
         foreach ($scriptMatches[1] as $scriptAttributes) {
             $this->assertStringContainsString('nonce="'.$nonceMatches[1].'"', $scriptAttributes);
