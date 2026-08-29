@@ -1,0 +1,5 @@
+@extends('layouts.admin')
+@section('title', 'Status Bahan')
+@section('content')
+<p class="eyebrow">Operasional</p><h1 class="page-title mt-2">Status bahan pencetakan</h1><p class="mt-3">Perbarui status aktual per lokasi dan waktu pemeriksaan.</p><div class="mt-8 grid gap-4 md:grid-cols-2">@foreach($supplies as $supply)<article class="card p-6"><div class="flex items-start justify-between gap-4"><div><h2 class="font-bold text-ink">{{ $supply->item }}</h2><p class="mt-1 text-sm">{{ $supply->location }}</p></div><span class="rounded-full px-3 py-1 text-xs font-bold {{ $supply->status->value === 'available' ? 'bg-emerald-100 text-emerald-800' : ($supply->status->value === 'limited' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800') }}">{{ $supply->status->label() }}</span></div><p class="mt-4 text-sm">{{ $supply->note }}</p><p class="mt-2 text-xs text-slate-500">{{ $supply->checked_at->translatedFormat('d M Y H.i') }} WITA</p><a href="{{ route('admin.supply-statuses.edit',$supply) }}" class="btn-secondary mt-5">Perbarui</a></article>@endforeach</div>
+@endsection
