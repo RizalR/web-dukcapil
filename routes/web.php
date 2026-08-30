@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\HomepageAppearanceController;
+use App\Http\Controllers\Admin\LeadershipProfileController;
 use App\Http\Controllers\Admin\NewsArticleController as AdminNewsArticleController;
 use App\Http\Controllers\Admin\PopulationStatisticController;
 use App\Http\Controllers\Admin\PopulationStatisticImportConfirmationController;
@@ -52,6 +53,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('population-statistic-imports', [PopulationStatisticImportConfirmationController::class, 'store'])->middleware('throttle:10,1')->name('population-statistic-imports.store');
     Route::resource('population-statistics', PopulationStatisticController::class);
     Route::resource('employees', EmployeeController::class);
+    Route::resource('leadership-profiles', LeadershipProfileController::class);
     Route::get('printing-statuses', [PrintingStatusController::class, 'index'])->name('printing-statuses.index');
     Route::get('printing-statuses/{printingStatus}/edit', [PrintingStatusController::class, 'edit'])->name('printing-statuses.edit');
     Route::put('printing-statuses/{printingStatus}', [PrintingStatusController::class, 'update'])->name('printing-statuses.update');

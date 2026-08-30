@@ -6,6 +6,7 @@ use App\AdministrativeAreaLevel;
 use App\LinkCategory;
 use App\Models\Employee;
 use App\Models\ExternalLink;
+use App\Models\LeadershipProfile;
 use App\Models\PopulationStatistic;
 use App\Models\PrintingStatus;
 use App\Models\PublicDocument;
@@ -23,7 +24,9 @@ class PublicPageController extends Controller
 
     public function profile(): View
     {
-        return view('public.profile');
+        return view('public.profile', [
+            'leadershipProfiles' => LeadershipProfile::query()->published()->ordered()->get(),
+        ]);
     }
 
     public function information(Request $request): View

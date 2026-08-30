@@ -31,6 +31,25 @@
     </div>
 </section>
 
+@if ($leadershipProfiles->isNotEmpty())
+    <section class="container-page py-16" aria-labelledby="leadership-heading">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+                <p class="eyebrow">Pemerintah Kabupaten Gorontalo</p>
+                <h2 id="leadership-heading" class="section-title mt-2">Pimpinan daerah dan perangkat daerah</h2>
+                <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Mengenal pimpinan daerah serta Kepala Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo.</p>
+            </div>
+            <a href="{{ route('profile') }}" class="font-bold text-ocean hover:text-ocean-deep">Lihat profil dinas →</a>
+        </div>
+
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach ($leadershipProfiles as $leadershipProfile)
+                <x-leadership-profile-card :profile="$leadershipProfile" />
+            @endforeach
+        </div>
+    </section>
+@endif
+
 @if ($heroSlides->isNotEmpty())
     <section class="container-page py-16" aria-labelledby="gallery-heading">
         <div>

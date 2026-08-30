@@ -7,6 +7,7 @@ use App\LinkCategory;
 use App\Models\ExternalLink;
 use App\Models\HeroSlide;
 use App\Models\HomepageSetting;
+use App\Models\LeadershipProfile;
 use App\Models\NewsArticle;
 use App\Models\PopulationStatistic;
 use App\Models\PrintingStatus;
@@ -25,6 +26,7 @@ class HomeController extends Controller
                 ? Storage::disk('public')->url($homepageSetting->background_image_path)
                 : asset('images/dukcapil_.jpeg'),
             'heroSlides' => HeroSlide::query()->visible()->orderBy('sort_order')->orderBy('id')->get(),
+            'leadershipProfiles' => LeadershipProfile::query()->published()->ordered()->get(),
             'featured' => NewsArticle::query()->published()->where('is_featured', true)->latest('published_at')->first(),
             'latestNews' => NewsArticle::query()->published()->with('author')->latest('published_at')->limit(3)->get(),
             'statistics' => $this->homepageStatistics(),

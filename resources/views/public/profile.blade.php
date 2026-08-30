@@ -3,6 +3,17 @@
 @section('meta_description', 'Profil Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo, tugas, fungsi, dan informasi kedinasan.')
 @section('content')
 <section class="bg-sky-soft"><div class="container-page py-14"><p class="eyebrow">Profil pemerintah</p><h1 class="page-title mt-3">Dukcapil Kabupaten Gorontalo</h1><p class="mt-5 max-w-3xl text-lg leading-8">Perangkat daerah yang melaksanakan urusan pemerintahan di bidang administrasi kependudukan dan pencatatan sipil.</p></div></section>
+@if ($leadershipProfiles->isNotEmpty())
+    <section class="container-page py-14" aria-labelledby="profile-leadership-heading">
+        <p class="eyebrow">Pimpinan</p>
+        <h2 id="profile-leadership-heading" class="section-title mt-2">Pimpinan daerah dan perangkat daerah</h2>
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach ($leadershipProfiles as $leadershipProfile)
+                <x-leadership-profile-card :profile="$leadershipProfile" />
+            @endforeach
+        </div>
+    </section>
+@endif
 <section class="container-page grid gap-6 py-14 lg:grid-cols-2"><article class="card p-7"><p class="eyebrow">Visi Kabupaten</p><h2 class="mt-4 text-2xl font-bold leading-9 text-ink">“Restorasi Kabupaten Gorontalo Berkemajuan dan Berkelanjutan.”</h2></article><article class="card p-7"><p class="eyebrow">Misi Kabupaten</p><ol class="mt-4 space-y-4 text-sm leading-6"><li><strong class="text-ink">01.</strong> Membangun sumber daya yang beragama, berbudaya, unggul, dan kompetitif.</li><li><strong class="text-ink">02.</strong> Mentransformasi ekonomi kerakyatan berbasis teknologi, berorientasi nilai tambah, dan berkelanjutan.</li><li><strong class="text-ink">03.</strong> Mewujudkan reformasi tata kelola pemerintahan yang baik.</li></ol></article></section>
 <section class="container-page pb-14"><div class="card overflow-hidden"><div class="border-b border-slate-200 p-7"><p class="eyebrow">Struktur organisasi</p><h2 class="section-title mt-2">Susunan fungsi Dinas Dukcapil</h2></div><div class="grid gap-px bg-slate-200 sm:grid-cols-2 lg:grid-cols-3">@foreach (['Kepala Dinas','Sekretariat','Bidang Pelayanan Pendaftaran Penduduk','Bidang Pelayanan Pencatatan Sipil','Bidang Pengelolaan Informasi Administrasi Kependudukan','Bidang Pemanfaatan Data dan Inovasi Pelayanan'] as $unit)<div class="bg-white p-6"><p class="font-bold text-ink">{{ $unit }}</p></div>@endforeach</div></div><p class="mt-4 text-xs text-slate-500">Susunan ini ditampilkan sebagai gambaran fungsi. Dokumen struktur resmi dapat diperbarui melalui dokumen publik.</p></section>
 @endsection
