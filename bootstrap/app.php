@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AddSecurityHeaders;
 use App\Http\Middleware\EnsureAdminUser;
+use App\Http\Middleware\EnsureSuperAdminHasTwoFactorAuthentication;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,7 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(AddSecurityHeaders::class);
-        $middleware->alias(['admin' => EnsureAdminUser::class]);
+        $middleware->alias([
+            'admin' => EnsureAdminUser::class,
+            'super-admin-mfa' => EnsureSuperAdminHasTwoFactorAuthentication::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

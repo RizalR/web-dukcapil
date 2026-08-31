@@ -67,10 +67,11 @@ class ContentSeeder extends Seeder
         }
 
         foreach ([
-            ['title' => 'Standar Pelayanan', 'category' => 'Pelayanan', 'description' => 'Standar pelayanan administrasi kependudukan.', 'url' => 'https://dukcapil.gorontalokab.go.id/profil/'],
+            ['title' => 'Standar Pelayanan', 'category' => 'Pelayanan', 'description' => 'Dokumen standar pelayanan administrasi kependudukan Kabupaten Gorontalo.', 'url' => 'https://drive.google.com/file/d/1FSR7yo19nL_hzwr54MSJMfDJHWs84549/view?usp=sharing'],
+            ['title' => 'Maklumat Pelayanan', 'category' => 'Pelayanan', 'description' => 'Maklumat pelayanan Dinas Dukcapil Kabupaten Gorontalo.', 'url' => 'https://drive.google.com/file/d/16td7X5xeDbSf67oQrWIHiBGvJfKff4tW/view?usp=sharing'],
             ['title' => 'Visi dan Misi Kabupaten Gorontalo', 'category' => 'Profil Pemerintah', 'description' => 'Visi dan misi kepala daerah Kabupaten Gorontalo.', 'url' => 'https://gorontalokab.go.id/halaman.php?slug=visi-misi-kepala-daerah'],
             ['title' => 'Dokumen Perencanaan Daerah', 'category' => 'Perencanaan', 'description' => 'Portal dokumen perencanaan Bapelitbangda Kabupaten Gorontalo.', 'url' => 'https://bapelitbangda.gorontalokab.go.id/dokumen'],
-            ['title' => 'Regulasi Administrasi Kependudukan', 'category' => 'Regulasi', 'description' => 'Jaringan Dokumentasi dan Informasi Hukum Kementerian Dalam Negeri.', 'url' => 'https://jdih.kemendagri.go.id/'],
+            ['title' => 'Regulasi Administrasi Kependudukan', 'category' => 'Regulasi', 'description' => 'Produk hukum Direktorat Jenderal Kependudukan dan Pencatatan Sipil Kementerian Dalam Negeri.', 'url' => 'https://dukcapil.kemendagri.go.id/download'],
         ] as $document) {
             PublicDocument::query()->updateOrCreate(
                 ['slug' => str($document['title'])->slug()],

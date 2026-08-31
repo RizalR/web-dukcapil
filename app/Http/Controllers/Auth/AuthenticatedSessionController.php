@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Services\AuditLogger;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -28,14 +29,43 @@ class AuthenticatedSessionController extends Controller
             throw ValidationException::withMessages(['email' => __('Terlalu banyak percobaan. Coba lagi dalam :seconds detik.', ['seconds' => RateLimiter::availableIn($key)])]);
         }
 
-        if (! Auth::attempt(['email' => $request->string('email')->toString(), 'password' => $request->string('password')->toString(), 'is_active' => true], $request->boolean('remember'))) {
+        $request->session()->forget([
+            TwoFactorChallengeController::SESSION_USER_ID,
+            TwoFactorChallengeController::SESSION_REMEMBER,
+        ]);
+
+        $credentials = [
+            'email' => $request->string('email')->toString(),
+            'password' => $request->string('password')->toString(),
+            'is_active' => true,
+        ];
+        $provider = Auth::guard('web')->getProvider();
+        $user = $provider->retrieveByCredentials($credentials);
+
+        if (! $user instanceof User || ! $provider->validateCredentials($user, $credentials)) {
             RateLimiter::hit($key, 60);
             throw ValidationException::withMessages(['email' => 'Email atau kata sandi tidak sesuai.']);
         }
 
         RateLimiter::clear($key);
+        $provider->rehashPasswordIfRequired($user, $credentials);
         $request->session()->regenerate();
+
+        if ($user->isSuperAdmin() && $user->hasConfirmedTwoFactorAuthentication()) {
+            $request->session()->put([
+                TwoFactorChallengeController::SESSION_USER_ID => $user->getKey(),
+                TwoFactorChallengeController::SESSION_REMEMBER => $request->boolean('remember'),
+            ]);
+
+            return redirect()->route('two-factor.challenge');
+        }
+
+        Auth::guard('web')->login($user, $request->boolean('remember'));
         $auditLogger->record('auth.login', 'Pengguna masuk ke panel administrasi.');
+
+        if ($user->isSuperAdmin()) {
+            return redirect()->route('admin.two-factor.edit');
+        }
 
         return redirect()->intended(route('admin.dashboard'));
     }

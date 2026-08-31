@@ -43,11 +43,32 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('population_statistics')
+            || ! Schema::hasColumn('population_statistics', 'area_code')) {
+            return;
+        }
+
+        $hasLegacyDuplicateKeys = DB::table('population_statistics')
+            ->select(['label', 'category', 'period', 'area'])
+            ->groupBy('label', 'category', 'period', 'area')
+            ->havingRaw('COUNT(*) > 1')
+            ->limit(1)
+            ->get()
+            ->isNotEmpty();
+
         Schema::table('population_statistics', function (Blueprint $table) {
             $table->dropUnique('population_statistic_area_unique');
             $table->dropIndex('population_statistics_browse_index');
-            $table->dropColumn(['area_code', 'area_level', 'parent_area_code']);
-            $table->unique(['label', 'category', 'period', 'area'], 'population_statistic_unique');
         });
+
+        Schema::table('population_statistics', function (Blueprint $table) {
+            $table->dropColumn(['area_code', 'area_level', 'parent_area_code']);
+        });
+
+        if (! $hasLegacyDuplicateKeys) {
+            Schema::table('population_statistics', function (Blueprint $table) {
+                $table->unique(['label', 'category', 'period', 'area'], 'population_statistic_unique');
+            });
+        }
     }
 };

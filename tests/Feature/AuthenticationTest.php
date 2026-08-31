@@ -22,9 +22,9 @@ class AuthenticationTest extends TestCase
         $this->get('/login')->assertRedirect('/masuk');
     }
 
-    public function test_active_admin_can_log_in_and_log_out(): void
+    public function test_active_editor_can_log_in_and_log_out(): void
     {
-        $user = User::factory()->superAdmin()->create(['password' => 'KataSandi!123']);
+        $user = User::factory()->create(['password' => 'KataSandi!123']);
 
         $this->post(route('login'), ['email' => $user->email, 'password' => 'KataSandi!123'])
             ->assertRedirect(route('admin.dashboard'));

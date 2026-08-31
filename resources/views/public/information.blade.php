@@ -9,7 +9,10 @@
             <h1 class="page-title mt-3">Data agregat kependudukan</h1>
             <p class="mt-4 max-w-3xl leading-7">Statistik penduduk, kepala keluarga, umur, agama, pendidikan, status perkawinan, disabilitas, dan KTP-el yang telah diterbitkan Dinas Dukcapil Kabupaten Gorontalo.</p>
         </div>
-        <a href="{{ route('statistics.export', array_filter(['period' => $selectedPeriod, 'kategori' => $selectedCategory?->slug()])) }}" class="btn-secondary">Unduh CSV</a>
+        <div class="flex flex-wrap gap-3">
+            <a href="{{ route('thematic-statistics', array_filter(['period' => $selectedPeriod])) }}" class="btn-primary">Statistik tematik</a>
+            <a href="{{ route('statistics.export', array_filter(['period' => $selectedPeriod, 'kategori' => $selectedCategory?->slug()])) }}" class="btn-secondary">Unduh CSV</a>
+        </div>
     </div>
 
     @if($periods->isNotEmpty() && $selectedCategory)

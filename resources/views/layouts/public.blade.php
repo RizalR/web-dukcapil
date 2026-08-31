@@ -70,7 +70,8 @@
 
             <nav class="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
                 @foreach ([['home','Beranda'],['services','Pelayanan'],['profile','Profil'],['news.index','Berita'],['information','Data'],['documents','Dokumen'],['employees','Pegawai'],['employee-apps','Aplikasi'],['contact','Kontak']] as [$routeName, $label])
-                    <a href="{{ route($routeName) }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs($routeName) ? 'bg-sky-soft text-ocean' : 'text-slate-600 hover:bg-slate-100 hover:text-ink' }}">{{ $label }}</a>
+                    @php($isActive = request()->routeIs($routeName) || ($routeName === 'information' && request()->routeIs('thematic-statistics')))
+                    <a href="{{ route($routeName) }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ $isActive ? 'bg-sky-soft text-ocean' : 'text-slate-600 hover:bg-slate-100 hover:text-ink' }}">{{ $label }}</a>
                 @endforeach
             </nav>
 
@@ -81,7 +82,8 @@
         <nav id="mobile-menu" data-mobile-menu class="container-page hidden border-t border-slate-200 py-3 lg:hidden" aria-label="Navigasi seluler">
             <div class="grid grid-cols-2 gap-2">
                 @foreach ([['home','Beranda'],['services','Pelayanan'],['profile','Profil'],['news.index','Berita'],['information','Data'],['documents','Dokumen'],['employees','Pegawai'],['employee-apps','Aplikasi'],['contact','Kontak']] as [$routeName, $label])
-                    <a href="{{ route($routeName) }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs($routeName) ? 'bg-sky-soft text-ocean' : 'text-slate-600 hover:bg-slate-100' }}">{{ $label }}</a>
+                    @php($isActive = request()->routeIs($routeName) || ($routeName === 'information' && request()->routeIs('thematic-statistics')))
+                    <a href="{{ route($routeName) }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ $isActive ? 'bg-sky-soft text-ocean' : 'text-slate-600 hover:bg-slate-100' }}">{{ $label }}</a>
                 @endforeach
             </div>
         </nav>
@@ -93,7 +95,7 @@
         <div class="container-page grid gap-10 py-12 md:grid-cols-[1.2fr_1fr_1fr]">
             <div><p class="text-lg font-bold text-white">Dukcapil Kabupaten Gorontalo</p><p class="mt-3 max-w-md text-sm leading-6">Media informasi kependudukan, berita, dokumen publik, dan profil Dinas Kependudukan dan Pencatatan Sipil.</p></div>
             <div><p class="font-bold text-white">Kontak</p><p class="mt-3 text-sm leading-6">{{ config('dukcapil.office.address') }}<br>{{ config('dukcapil.office.phone') }}<br>{{ config('dukcapil.office.email') }}</p></div>
-            <div><p class="font-bold text-white">Akses cepat</p><div class="mt-3 flex flex-col gap-2 text-sm"><a href="{{ route('documents') }}" class="hover:text-white">Dokumen publik</a><a href="{{ route('statistics.export') }}" class="hover:text-white">Unduh data CSV</a><a href="{{ route('login') }}" class="hover:text-white">Masuk pengelola</a></div></div>
+            <div><p class="font-bold text-white">Akses cepat</p><div class="mt-3 flex flex-col gap-2 text-sm"><a href="{{ route('documents') }}" class="hover:text-white">Dokumen publik</a><a href="{{ route('thematic-statistics') }}" class="hover:text-white">Statistik tematik</a><a href="{{ route('statistics.export') }}" class="hover:text-white">Unduh data CSV</a><a href="{{ route('login') }}" class="hover:text-white">Masuk pengelola</a></div></div>
         </div>
         <div class="border-t border-white/10"><div class="container-page py-4 text-xs">© {{ date('Y') }} Pemerintah Kabupaten Gorontalo. Informasi diperbarui oleh Dinas Dukcapil.</div></div>
     </footer>

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AuditLog;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
@@ -13,8 +14,14 @@ class AuditLogger
     /** @param array<string, mixed> $properties */
     public function record(string $action, string $description, ?Model $auditable = null, array $properties = []): AuditLog
     {
+        return $this->recordForUser($this->request->user(), $action, $description, $auditable, $properties);
+    }
+
+    /** @param array<string, mixed> $properties */
+    public function recordForUser(?User $user, string $action, string $description, ?Model $auditable = null, array $properties = []): AuditLog
+    {
         return AuditLog::query()->create([
-            'user_id' => $this->request->user()?->id,
+            'user_id' => $user?->id,
             'action' => $action,
             'auditable_type' => $auditable?->getMorphClass(),
             'auditable_id' => $auditable?->getKey(),

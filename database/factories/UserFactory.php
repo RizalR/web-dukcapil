@@ -48,7 +48,22 @@ class UserFactory extends Factory
 
     public function superAdmin(): static
     {
-        return $this->state(fn (): array => ['role' => UserRole::SuperAdmin]);
+        return $this->state(fn (): array => [
+            'role' => UserRole::SuperAdmin,
+            'two_factor_secret' => encrypt('TESTTWOFACTORSECRET123456789012'),
+            'two_factor_recovery_codes' => encrypt(json_encode(['test-recovery-code'])),
+            'two_factor_confirmed_at' => now(),
+        ]);
+    }
+
+    public function superAdminWithoutTwoFactorAuthentication(): static
+    {
+        return $this->state(fn (): array => [
+            'role' => UserRole::SuperAdmin,
+            'two_factor_secret' => null,
+            'two_factor_recovery_codes' => null,
+            'two_factor_confirmed_at' => null,
+        ]);
     }
 
     public function inactive(): static

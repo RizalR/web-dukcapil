@@ -9,12 +9,15 @@ use DOMElement;
 use DOMXPath;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use XMLReader;
 
 class PopulationStatisticXlsxReader
 {
     private const int MAX_ARCHIVE_BYTES = 2_097_152;
 
     private const int MAX_ARCHIVE_ENTRIES = 100;
+
+    private const int MAX_COLUMNS = 250;
 
     private const int MAX_ENTRY_BYTES = 5_242_880;
 
@@ -42,11 +45,18 @@ class PopulationStatisticXlsxReader
     }
 
     /** @return list<array<string, string|null>> */
-    public function readTabularFile(string $path, string $sheetName): array
-    {
+    public function readTabularFile(
+        string $path,
+        string $sheetName,
+        int $maxRows = self::MAX_ROWS,
+        int $maxEntryBytes = self::MAX_ENTRY_BYTES,
+        int $maxArchiveBytes = self::MAX_ARCHIVE_BYTES,
+        int $maxTotalUncompressedBytes = self::MAX_TOTAL_UNCOMPRESSED_BYTES,
+        ?callable $dataRowFilter = null,
+    ): array {
         $size = @filesize($path);
 
-        if (! is_file($path) || ! is_readable($path) || $size === false || $size > self::MAX_ARCHIVE_BYTES) {
+        if (! is_file($path) || ! is_readable($path) || $size === false || $size > $maxArchiveBytes) {
             throw new InvalidPopulationStatisticWorkbook('File Excel tidak dapat dibaca atau melebihi 2 MB.');
         }
 
@@ -56,18 +66,26 @@ class PopulationStatisticXlsxReader
             throw new InvalidPopulationStatisticWorkbook('File Excel tidak dapat dibaca.');
         }
 
-        $entries = $this->readArchiveDirectory($contents);
+        $entries = $this->readArchiveDirectory($contents, $maxEntryBytes, $maxTotalUncompressedBytes);
         $worksheetPath = $this->findWorksheetPath($contents, $entries, $sheetName);
         $sharedStrings = $this->readSharedStrings($contents, $entries);
 
-        return $this->readWorksheetRows($this->extractEntry($contents, $entries, $worksheetPath), $sharedStrings);
+        return $this->readWorksheetRows(
+            $this->extractEntry($contents, $entries, $worksheetPath),
+            $sharedStrings,
+            $maxRows,
+            $dataRowFilter,
+        );
     }
 
     /**
      * @return array<string, array{compression: int, compressed_size: int, uncompressed_size: int, crc: int, flags: int, local_offset: int}>
      */
-    private function readArchiveDirectory(string $contents): array
-    {
+    private function readArchiveDirectory(
+        string $contents,
+        int $maxEntryBytes = self::MAX_ENTRY_BYTES,
+        int $maxTotalUncompressedBytes = self::MAX_TOTAL_UNCOMPRESSED_BYTES,
+    ): array {
         $searchStart = max(0, strlen($contents) - 65_557);
         $endRecordPosition = strrpos(substr($contents, $searchStart), "PK\x05\x06");
 
@@ -132,7 +150,7 @@ class PopulationStatisticXlsxReader
                 throw new InvalidPopulationStatisticWorkbook('Arsip XLSX terenkripsi atau menggunakan kompresi yang tidak didukung.');
             }
 
-            if ($header['uncompressed_size'] > self::MAX_ENTRY_BYTES
+            if ($header['uncompressed_size'] > $maxEntryBytes
                 || ($header['compressed_size'] > 0
                     && $header['uncompressed_size'] > 1_048_576
                     && $header['uncompressed_size'] / $header['compressed_size'] > 100)) {
@@ -147,7 +165,7 @@ class PopulationStatisticXlsxReader
 
             $totalUncompressedBytes += $header['uncompressed_size'];
 
-            if ($totalUncompressedBytes > self::MAX_TOTAL_UNCOMPRESSED_BYTES) {
+            if ($totalUncompressedBytes > $maxTotalUncompressedBytes) {
                 throw new InvalidPopulationStatisticWorkbook('Total ukuran isi XLSX melebihi batas aman.');
             }
 
@@ -291,66 +309,122 @@ class PopulationStatisticXlsxReader
      * @param  list<string>  $sharedStrings
      * @return list<array<string, string|null>>
      */
-    private function readWorksheetRows(string $worksheetXml, array $sharedStrings): array
-    {
-        $worksheet = $this->xml($worksheetXml);
-        $xpath = new DOMXPath($worksheet);
-        $rows = [];
+    private function readWorksheetRows(
+        string $worksheetXml,
+        array $sharedStrings,
+        int $maxRows = self::MAX_ROWS,
+        ?callable $dataRowFilter = null,
+    ): array {
+        if (stripos($worksheetXml, '<!DOCTYPE') !== false || stripos($worksheetXml, '<!ENTITY') !== false) {
+            throw new InvalidPopulationStatisticWorkbook('Deklarasi XML eksternal tidak diizinkan.');
+        }
 
-        foreach ($xpath->query('//*[local-name()="sheetData"]/*[local-name()="row"]') ?: [] as $row) {
-            if (count($rows) >= self::MAX_ROWS + 1) {
-                throw new InvalidPopulationStatisticWorkbook('Workbook memuat lebih dari 1.000 baris data.');
+        $reader = new XMLReader;
+
+        if (! $reader->XML($worksheetXml, null, LIBXML_NONET | LIBXML_COMPACT)) {
+            throw new InvalidPopulationStatisticWorkbook('XML worksheet tidak valid.');
+        }
+
+        $rows = [];
+        $currentRow = null;
+        $currentCellCount = 0;
+        $worksheetRowCount = 0;
+
+        while ($reader->read()) {
+            if ($reader->nodeType === XMLReader::ELEMENT && $reader->localName === 'row') {
+                $currentRow = [];
+                $currentCellCount = 0;
+
+                continue;
             }
 
-            $values = [];
+            if ($currentRow !== null && $reader->nodeType === XMLReader::ELEMENT && $reader->localName === 'c') {
+                $currentCellCount++;
 
-            foreach ($xpath->query('./*[local-name()="c"]', $row) ?: [] as $cell) {
-                if (! $cell instanceof DOMElement) {
-                    continue;
+                if ($currentCellCount > self::MAX_COLUMNS) {
+                    $reader->close();
+
+                    throw new InvalidPopulationStatisticWorkbook('Worksheet memuat lebih dari 250 kolom pada satu baris.');
                 }
 
-                $reference = strtoupper($cell->getAttribute('r'));
+                $reference = strtoupper((string) $reader->getAttribute('r'));
 
                 if (preg_match('/^([A-Z]+)\d+$/', $reference, $matches) !== 1) {
-                    continue;
+                    $reader->close();
+
+                    throw new InvalidPopulationStatisticWorkbook('Referensi sel pada worksheet tidak valid.');
                 }
 
-                $values[$matches[1]] = $this->cellValue($xpath, $cell, $sharedStrings);
+                if (array_key_exists($matches[1], $currentRow)) {
+                    $reader->close();
+
+                    throw new InvalidPopulationStatisticWorkbook('Worksheet memuat referensi kolom ganda pada satu baris.');
+                }
+
+                $currentRow[$matches[1]] = $this->streamedCellValue($reader, $sharedStrings);
+
+                continue;
             }
 
-            $rows[] = $values;
+            if ($currentRow !== null && $reader->nodeType === XMLReader::END_ELEMENT && $reader->localName === 'row') {
+                $worksheetRowCount++;
+
+                if ($worksheetRowCount === 1
+                    || $dataRowFilter === null
+                    || $dataRowFilter($currentRow, $rows[0])) {
+                    $rows[] = $currentRow;
+                }
+
+                $currentRow = null;
+
+                if ($worksheetRowCount > $maxRows + 1) {
+                    $reader->close();
+
+                    throw new InvalidPopulationStatisticWorkbook("Workbook memuat lebih dari {$maxRows} baris data.");
+                }
+            }
         }
+
+        $reader->close();
 
         return $rows;
     }
 
-    /**
-     * @param  list<string>  $sharedStrings
-     */
-    private function cellValue(DOMXPath $xpath, DOMElement $cell, array $sharedStrings): ?string
+    /** @param list<string> $sharedStrings */
+    private function streamedCellValue(XMLReader $reader, array $sharedStrings): ?string
     {
-        if ($cell->getAttribute('t') === 'inlineStr') {
-            $inlineString = $xpath->query('.//*[local-name()="t"]', $cell);
-            $value = '';
+        $type = (string) $reader->getAttribute('t');
+        $cellDepth = $reader->depth;
+        $value = null;
+        $inlineValue = '';
 
-            if ($inlineString === false) {
-                return null;
-            }
-
-            foreach ($inlineString as $text) {
-                $value .= $text->textContent;
-            }
-
-            return $value;
-        }
-
-        $value = $xpath->query('./*[local-name()="v"]', $cell)?->item(0)?->textContent;
-
-        if ($value === null) {
+        if ($reader->isEmptyElement) {
             return null;
         }
 
-        if ($cell->getAttribute('t') !== 's') {
+        while ($reader->read()) {
+            if ($reader->nodeType === XMLReader::END_ELEMENT && $reader->localName === 'c' && $reader->depth === $cellDepth) {
+                break;
+            }
+
+            if ($reader->nodeType !== XMLReader::ELEMENT) {
+                continue;
+            }
+
+            if ($reader->localName === 'v') {
+                $value = $reader->readString();
+            }
+
+            if ($type === 'inlineStr' && $reader->localName === 't') {
+                $inlineValue .= $reader->readString();
+            }
+        }
+
+        if ($type === 'inlineStr') {
+            return $inlineValue;
+        }
+
+        if ($value === null || $type !== 's') {
             return $value;
         }
 

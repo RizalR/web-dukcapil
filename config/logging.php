@@ -1,5 +1,6 @@
 <?php
 
+use App\Logging\SizeRotatingFileHandler;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -59,9 +60,14 @@ return [
         ],
 
         'single' => [
-            'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'driver' => 'monolog',
+            'handler' => SizeRotatingFileHandler::class,
             'level' => env('LOG_LEVEL', 'debug'),
+            'handler_with' => [
+                'stream' => storage_path('logs/laravel.log'),
+                'maxBytes' => max(1, (int) env('LOG_MAX_FILE_SIZE_MB', 10)) * 1024 * 1024,
+                'maxFiles' => max(1, (int) env('LOG_MAX_FILES', 14)),
+            ],
             'replace_placeholders' => true,
         ],
 

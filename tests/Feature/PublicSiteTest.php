@@ -11,6 +11,7 @@ use App\Models\PrintingStatus;
 use App\Models\User;
 use App\PopulationStatisticCategory;
 use App\PrintingDocument;
+use Database\Seeders\ContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -155,6 +156,20 @@ class PublicSiteTest extends TestCase
         foreach (['services', 'profile', 'information', 'documents', 'employees', 'employee-apps', 'contact', 'news.index'] as $routeName) {
             $this->get(route($routeName))->assertOk();
         }
+    }
+
+    public function test_documents_page_displays_official_external_resources(): void
+    {
+        $this->seed(ContentSeeder::class);
+
+        $response = $this->get(route('documents'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Maklumat Pelayanan')
+            ->assertSee('href="https://dukcapil.kemendagri.go.id/download" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="https://drive.google.com/file/d/1FSR7yo19nL_hzwr54MSJMfDJHWs84549/view?usp=sharing" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="https://drive.google.com/file/d/16td7X5xeDbSf67oQrWIHiBGvJfKff4tW/view?usp=sharing" target="_blank" rel="noopener noreferrer"', false);
     }
 
     public function test_information_page_displays_published_gender_statistics_by_area_hierarchy(): void

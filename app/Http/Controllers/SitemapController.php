@@ -16,6 +16,7 @@ class SitemapController extends Controller
             'profile',
             'news.index',
             'information',
+            'thematic-statistics',
             'documents',
             'employees',
             'employee-apps',

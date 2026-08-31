@@ -8,7 +8,7 @@
 <body class="grid min-h-screen place-items-center bg-ink p-4">
     <main class="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl sm:p-9">
         <a href="{{ route('home') }}" class="flex items-center gap-3"><span class="grid size-11 place-items-center rounded-xl bg-ocean font-black text-white">DG</span><span class="font-bold text-ink">Dukcapil Kabupaten Gorontalo</span></a>
-        <p class="eyebrow mt-9">Akses terbatas</p><h1 class="mt-2 text-3xl font-black text-ink">Masuk pengelola</h1><p class="mt-2 text-sm">Gunakan akun super admin atau editor berita.</p>
+        <p class="eyebrow mt-9">Akses terbatas</p><h1 class="mt-2 text-3xl font-black text-ink">Masuk pengelola</h1><p class="mt-2 text-sm">Gunakan akun super admin atau editor berita. Super Admin wajib melanjutkan dengan kode autentikasi dua faktor.</p>
         @if($errors->any())<div class="mt-5 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800" role="alert">{{ $errors->first() }}</div>@endif
         <form action="{{ route('login') }}" method="post" class="mt-7 space-y-5">@csrf
             <div><label class="form-label" for="email">Email</label><input class="form-input" id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="username" maxlength="255"></div>
