@@ -35,6 +35,7 @@ Route::get('/berita/{newsArticle}', [NewsController::class, 'show'])->name('news
 Route::get('/pencarian', SearchController::class)->name('search');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/data-kependudukan.csv', StatisticsExportController::class)->middleware('throttle:20,1')->name('statistics.export');
+Route::redirect('/login', '/masuk');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/masuk', [AuthenticatedSessionController::class, 'create'])->name('login');

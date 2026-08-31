@@ -10,6 +10,18 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_guest_can_open_the_manager_login_page(): void
+    {
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertViewIs('auth.login');
+    }
+
+    public function test_login_alias_redirects_to_the_manager_login_page(): void
+    {
+        $this->get('/login')->assertRedirect('/masuk');
+    }
+
     public function test_active_admin_can_log_in_and_log_out(): void
     {
         $user = User::factory()->superAdmin()->create(['password' => 'KataSandi!123']);
