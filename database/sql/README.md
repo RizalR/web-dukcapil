@@ -1,13 +1,16 @@
 # SQL MySQL/MariaDB
 
-File `web_dukcapil_mysql.sql` berisi skema database yang setara dengan migration Laravel aplikasi ini. Skema telah divalidasi pada MySQL 8.4.3 Laragon.
+File `web_dukcapil_mysql.sql` berisi skema dasar database yang setara dengan migration Laravel aplikasi ini. File `update_2026_08_31.sql` melengkapi skema dengan seluruh pembaruan berikutnya. Keduanya menggunakan database `dukc_kabGTLO` yang sudah tersedia dan telah divalidasi pada MySQL 8.4.3 Laragon.
 
 ## Impor melalui phpMyAdmin
 
 1. Buka phpMyAdmin dari Laragon.
-2. Pilih menu **Import**.
-3. Pilih file `web_dukcapil_mysql.sql`.
-4. Jalankan impor. Database `web_dukcapil` akan dibuat otomatis.
+2. Pastikan database kosong `dukc_kabGTLO` sudah tersedia.
+3. Pilih database `dukc_kabGTLO`, lalu buka menu **Import**.
+4. Impor file `web_dukcapil_mysql.sql`.
+5. Setelah berhasil, impor file `update_2026_08_31.sql`. Skrip update juga membangun ulang foreign key agar tidak membawa referensi database lama `web_dukcapil`.
+
+Kedua file hanya mengisi database yang sudah tersedia dan tidak membuat database baru.
 
 ## Konfigurasi Laravel
 
@@ -17,7 +20,7 @@ Ubah bagian database pada `.env`:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=web_dukcapil
+DB_DATABASE=dukc_kabGTLO
 DB_USERNAME=root
 DB_PASSWORD=
 ```

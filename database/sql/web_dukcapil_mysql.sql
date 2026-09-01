@@ -1,16 +1,12 @@
 -- Portal Informasi Dukcapil Kabupaten Gorontalo
--- Target: MySQL 8.0+ / MySQL 8.4 Laragon
+-- Target: database dukc_kabGTLO pada MySQL 8.0+ / MySQL 8.4 Laragon
 -- Isi: struktur tabel, foreign key, indeks, dan riwayat migration.
 -- Tidak memuat akun, kata sandi, atau data konten.
 
 SET NAMES utf8mb4;
 SET time_zone = '+08:00';
 
-CREATE DATABASE IF NOT EXISTS `web_dukcapil`
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE `web_dukcapil`;
+USE `dukc_kabGTLO`;
 
 CREATE TABLE IF NOT EXISTS `users` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -111,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `homepage_settings` (
     PRIMARY KEY (`id`),
     KEY `homepage_settings_updated_by_foreign` (`updated_by`),
     CONSTRAINT `homepage_settings_updated_by_foreign`
-        FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+        FOREIGN KEY (`updated_by`) REFERENCES `dukc_kabGTLO`.`users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `hero_slides` (
@@ -131,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `hero_slides` (
     KEY `hero_slides_is_active_sort_order_index` (`is_active`, `sort_order`),
     KEY `hero_slides_updated_by_foreign` (`updated_by`),
     CONSTRAINT `hero_slides_updated_by_foreign`
-        FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+        FOREIGN KEY (`updated_by`) REFERENCES `dukc_kabGTLO`.`users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `news_articles` (
@@ -152,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `news_articles` (
     KEY `news_articles_author_id_foreign` (`author_id`),
     KEY `news_articles_status_published_at_index` (`status`, `published_at`),
     CONSTRAINT `news_articles_author_id_foreign`
-        FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT
+        FOREIGN KEY (`author_id`) REFERENCES `dukc_kabGTLO`.`users` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `population_statistics` (
@@ -175,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `population_statistics` (
     KEY `population_statistics_published_at_index` (`published_at`),
     KEY `population_statistics_updated_by_foreign` (`updated_by`),
     CONSTRAINT `population_statistics_updated_by_foreign`
-        FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+        FOREIGN KEY (`updated_by`) REFERENCES `dukc_kabGTLO`.`users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `supply_statuses` (
@@ -193,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `supply_statuses` (
     UNIQUE KEY `supply_statuses_location_item_unique` (`location`, `item`),
     KEY `supply_statuses_updated_by_foreign` (`updated_by`),
     CONSTRAINT `supply_statuses_updated_by_foreign`
-        FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+        FOREIGN KEY (`updated_by`) REFERENCES `dukc_kabGTLO`.`users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `public_documents` (
@@ -213,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `public_documents` (
     KEY `public_documents_category_year_index` (`category`, `year`),
     KEY `public_documents_updated_by_foreign` (`updated_by`),
     CONSTRAINT `public_documents_updated_by_foreign`
-        FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+        FOREIGN KEY (`updated_by`) REFERENCES `dukc_kabGTLO`.`users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `employees` (
@@ -231,7 +227,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
     KEY `employees_is_published_sort_order_index` (`is_published`, `sort_order`),
     KEY `employees_updated_by_foreign` (`updated_by`),
     CONSTRAINT `employees_updated_by_foreign`
-        FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+        FOREIGN KEY (`updated_by`) REFERENCES `dukc_kabGTLO`.`users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `external_links` (
@@ -268,7 +264,7 @@ CREATE TABLE IF NOT EXISTS `audit_logs` (
     KEY `audit_logs_auditable_type_auditable_id_index` (`auditable_type`, `auditable_id`),
     KEY `audit_logs_action_created_at_index` (`action`, `created_at`),
     CONSTRAINT `audit_logs_user_id_foreign`
-        FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+        FOREIGN KEY (`user_id`) REFERENCES `dukc_kabGTLO`.`users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `migrations` (
