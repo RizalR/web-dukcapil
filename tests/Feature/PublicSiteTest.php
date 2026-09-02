@@ -8,9 +8,11 @@ use App\Models\HomepageSetting;
 use App\Models\NewsArticle;
 use App\Models\PopulationStatistic;
 use App\Models\PrintingStatus;
+use App\Models\SupplyStatus;
 use App\Models\User;
 use App\PopulationStatisticCategory;
 use App\PrintingDocument;
+use App\SupplyLevel;
 use Database\Seeders\ContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -88,7 +90,7 @@ class PublicSiteTest extends TestCase
         });
     }
 
-    public function test_homepage_and_information_page_display_current_printing_statuses(): void
+    public function test_homepage_and_services_page_display_current_printing_statuses(): void
     {
         $ktpStatus = PrintingStatus::query()->where('document', PrintingDocument::ElectronicIdentityCard->value)->sole();
         $ktpStatus->update([
@@ -105,7 +107,7 @@ class PublicSiteTest extends TestCase
             'checked_at' => '2026-08-30 08:05:00',
         ]);
 
-        foreach ([route('home'), route('information')] as $url) {
+        foreach ([route('home'), route('services')] as $url) {
             $this->get($url)
                 ->assertOk()
                 ->assertSee('Status pencetakan')
@@ -114,6 +116,46 @@ class PublicSiteTest extends TestCase
                 ->assertSee('Pencetakan belum tersedia.')
                 ->assertDontSee('<script>alert("status")</script>', false);
         }
+
+        $this->get(route('information'))
+            ->assertOk()
+            ->assertDontSee('Status pencetakan KTP-el dan KIA')
+            ->assertDontSee('Pencetakan belum tersedia.');
+    }
+
+    public function test_services_page_displays_current_supply_statuses(): void
+    {
+        SupplyStatus::factory()->create([
+            'location' => 'Mall Pelayanan Publik',
+            'item' => 'Blangko KTP-el layanan publik',
+            'status' => SupplyLevel::Limited,
+            'note' => '<script>alert("supply")</script> Persediaan terbatas.',
+            'source' => 'Operator bahan cetak',
+            'checked_at' => '2026-08-30 09:15:00',
+        ]);
+
+        $response = $this->get(route('services'));
+
+        $response
+            ->assertSee('Status bahan cetak')
+            ->assertSee('Blangko KTP-el layanan publik')
+            ->assertSee('Mall Pelayanan Publik')
+            ->assertSee('Terbatas')
+            ->assertSee('Persediaan terbatas.')
+            ->assertSee('Operator bahan cetak')
+            ->assertDontSee('<script>alert("supply")</script>', false);
+    }
+
+    public function test_services_page_displays_empty_status_messages(): void
+    {
+        PrintingStatus::query()->delete();
+        SupplyStatus::query()->delete();
+
+        $response = $this->get(route('services'));
+
+        $response
+            ->assertSee('Status pencetakan belum tersedia.')
+            ->assertSee('Status bahan cetak belum tersedia.');
     }
 
     public function test_csp_nonce_is_applied_to_every_rendered_script(): void
@@ -156,6 +198,36 @@ class PublicSiteTest extends TestCase
         foreach (['services', 'profile', 'information', 'documents', 'employees', 'employee-apps', 'contact', 'news.index'] as $routeName) {
             $this->get(route($routeName))->assertOk();
         }
+    }
+
+    public function test_services_page_displays_announcement_and_siprima_submission_flow(): void
+    {
+        $response = $this->get(route('services'));
+
+        $response
+            ->assertSee('Pengumuman perubahan layanan')
+            ->assertSee('Mulai 1 Maret 2026')
+            ->assertSee('src="'.asset('images/pengumuman-layanan-dukcapil.jpeg').'"', false)
+            ->assertSee('alt="Poster pengumuman perubahan layanan Dukcapil Kabupaten Gorontalo mulai 1 Maret 2026"', false)
+            ->assertSee('Alur pengajuan melalui SI PRIMA')
+            ->assertSee('src="'.asset('images/alur-pengajuan-siprima.png').'"', false)
+            ->assertSee('alt="Diagram alur pengajuan dan penerimaan dokumen melalui SI PRIMA"', false)
+            ->assertSee('href="'.config('dukcapil.service_url').'" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="'.asset('images/alur-pengajuan-siprima.png').'" target="_blank" rel="noopener noreferrer"', false);
+
+        $this->assertFileExists(public_path('images/pengumuman-layanan-dukcapil.jpeg'));
+        $this->assertFileExists(public_path('images/alur-pengajuan-siprima.png'));
+    }
+
+    public function test_services_page_displays_siprima_hours_and_current_contact_email(): void
+    {
+        $response = $this->get(route('services'));
+
+        $response
+            ->assertSee('Jam Pelayanan SI PRIMA')
+            ->assertSee('Senin–Jumat, 08.00–15.30 WITA')
+            ->assertSee('dkpskabgor@gmail.com')
+            ->assertDontSee('dukcapil@gorontalokab.go.id');
     }
 
     public function test_documents_page_displays_official_external_resources(): void

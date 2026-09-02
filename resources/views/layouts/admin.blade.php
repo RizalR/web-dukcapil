@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon-logo-dukcapil.png') }}">
     <meta name="robots" content="noindex,nofollow">
     <title>@yield('title', 'Panel Admin') — Dukcapil Kabupaten Gorontalo</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -23,6 +24,9 @@
                     <a href="{{ route('admin.printing-statuses.index') }}" class="rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('admin.printing-statuses.*') ? 'bg-white/10 text-white' : 'hover:bg-white/5 hover:text-white' }}">Status pencetakan</a>
                     <a href="{{ route('admin.supply-statuses.index') }}" class="rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('admin.supply-statuses.*') ? 'bg-white/10 text-white' : 'hover:bg-white/5 hover:text-white' }}">Status bahan</a>
                     <a href="{{ route('admin.audit-logs') }}" class="rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('admin.audit-logs') ? 'bg-white/10 text-white' : 'hover:bg-white/5 hover:text-white' }}">Audit log</a>
+                    @if(config('dukcapil.maintenance.web_migrations_enabled'))
+                        <a href="{{ route('admin.database-migrations.create') }}" class="rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('admin.database-migrations.*') ? 'bg-white/10 text-white' : 'hover:bg-white/5 hover:text-white' }}">Migrasi database</a>
+                    @endif
                     <a href="{{ route('admin.two-factor.edit') }}" class="rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs('admin.two-factor.*') ? 'bg-white/10 text-white' : 'hover:bg-white/5 hover:text-white' }}">Keamanan akun</a>
                 @endif
             </nav>

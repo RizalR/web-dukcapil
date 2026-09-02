@@ -10,6 +10,7 @@ use App\Models\LeadershipProfile;
 use App\Models\PopulationStatistic;
 use App\Models\PrintingStatus;
 use App\Models\PublicDocument;
+use App\Models\SupplyStatus;
 use App\PopulationStatisticCategory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -19,7 +20,10 @@ class PublicPageController extends Controller
 {
     public function services(): View
     {
-        return view('public.services');
+        return view('public.services', [
+            'printingStatuses' => PrintingStatus::query()->orderBy('sort_order')->orderBy('id')->get(),
+            'supplyStatuses' => SupplyStatus::query()->orderBy('location')->orderBy('item')->get(),
+        ]);
     }
 
     public function profile(): View
@@ -139,7 +143,6 @@ class PublicPageController extends Controller
             'selectedDistrict' => $selectedDistrict,
             'villages' => $villages,
             'legacyStatistics' => $legacyStatistics,
-            'printingStatuses' => PrintingStatus::query()->orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 

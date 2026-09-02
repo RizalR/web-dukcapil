@@ -166,18 +166,4 @@
     @endif
 </section>
 
-<section class="bg-sky-soft py-14">
-    <div class="container-page">
-        <p class="eyebrow">Informasi pelayanan terkini</p>
-        <h2 class="section-title mt-2">Status pencetakan KTP-el dan KIA</h2>
-        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Status menunjukkan apakah pencetakan dokumen sedang tersedia pada waktu pemeriksaan terakhir.</p>
-        <div class="mt-8 grid gap-4 md:grid-cols-2">
-            @forelse($printingStatuses as $printingStatus)
-                <x-printing-status-card :printing-status="$printingStatus" />
-            @empty
-                <div class="card col-span-full p-8 text-center">Status pencetakan belum tersedia.</div>
-            @endforelse
-        </div>
-    </div>
-</section>
 @endsection

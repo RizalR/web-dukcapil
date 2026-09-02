@@ -2,7 +2,7 @@
 
 @section('title', 'Beranda')
 @section('meta_description', 'Informasi kependudukan, berita, status pencetakan KTP-el dan KIA, serta dokumen publik Dukcapil Kabupaten Gorontalo.')
-
+c:\Users\ASUS\Downloads\web\favicon-logo-dukcapil.png
 @section('content')
 <section class="relative overflow-hidden bg-ink text-white">
     <img src="{{ $homepageBackgroundUrl }}" alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 size-full object-cover object-center">

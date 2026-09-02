@@ -59,6 +59,7 @@ class SeoTest extends TestCase
             ->assertSee('https://dukcapil.gorontalokab.go.id/', false)
             ->assertSee('https://dukcapil.gorontalokab.go.id/informasi', false)
             ->assertSee('https://dukcapil.gorontalokab.go.id/data-tematik', false)
+            ->assertSee('https://dukcapil.gorontalokab.go.id/aduan-whistleblowing', false)
             ->assertSee('https://dukcapil.gorontalokab.go.id/berita/'.$published->slug, false)
             ->assertDontSee('berita-draf-seo', false)
             ->assertDontSee('/admin', false)

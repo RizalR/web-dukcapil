@@ -13,6 +13,7 @@ class SitemapController extends Controller
         $staticUrls = collect([
             'home',
             'services',
+            'whistleblowing.index',
             'profile',
             'news.index',
             'information',

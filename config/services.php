@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'siprima_whistleblowing' => [
+        'url' => env('SIPRIMA_WHISTLEBLOWING_API_URL'),
+        'token' => env('SIPRIMA_WHISTLEBLOWING_API_TOKEN'),
+        'connect_timeout' => env('SIPRIMA_WHISTLEBLOWING_CONNECT_TIMEOUT', 3),
+        'timeout' => env('SIPRIMA_WHISTLEBLOWING_API_TIMEOUT', 10),
+        'stale_after_minutes' => env('SIPRIMA_WHISTLEBLOWING_STALE_AFTER_MINUTES', 30),
+    ],
+
 ];

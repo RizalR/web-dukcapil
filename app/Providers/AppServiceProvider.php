@@ -24,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::define('viewAuditLogs', fn (User $user): bool => $user->isSuperAdmin());
         Gate::define('manageHomepage', fn (User $user): bool => $user->isSuperAdmin());
+        Gate::define('runDatabaseMigrations', fn (User $user): bool => $user->isSuperAdmin());
     }
 }

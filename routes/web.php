@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DatabaseMigrationController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\HomepageAppearanceController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StatisticsExportController;
 use App\Http\Controllers\ThematicStatisticController;
+use App\Http\Controllers\WhistleblowingPublicationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -43,6 +45,7 @@ Route::get('/pencarian', SearchController::class)->name('search');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/data-kependudukan.csv', StatisticsExportController::class)->middleware('throttle:20,1')->name('statistics.export');
 Route::get('/data-tematik', ThematicStatisticController::class)->name('thematic-statistics');
+Route::get('/aduan-whistleblowing', WhistleblowingPublicationController::class)->name('whistleblowing.index');
 Route::redirect('/login', '/masuk');
 
 Route::middleware('guest')->group(function (): void {
@@ -84,6 +87,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'super-admi
     Route::get('supply-statuses/{supplyStatus}/edit', [SupplyStatusController::class, 'edit'])->name('supply-statuses.edit');
     Route::put('supply-statuses/{supplyStatus}', [SupplyStatusController::class, 'update'])->name('supply-statuses.update');
     Route::get('audit-logs', AuditLogController::class)->name('audit-logs');
+    Route::get('database-migrations', [DatabaseMigrationController::class, 'create'])->name('database-migrations.create');
+    Route::post('database-migrations', [DatabaseMigrationController::class, 'store'])->middleware('throttle:2,1')->name('database-migrations.store');
     Route::get('homepage', [HomepageAppearanceController::class, 'edit'])->name('homepage.edit');
     Route::put('homepage', [HomepageAppearanceController::class, 'update'])->name('homepage.update');
     Route::delete('homepage/background', [HomepageAppearanceController::class, 'destroy'])->name('homepage.background.destroy');

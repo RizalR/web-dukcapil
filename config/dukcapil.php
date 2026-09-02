@@ -5,6 +5,7 @@ return [
     'short_name' => 'Dukcapil Kab. Gorontalo',
     'public_url' => env('DUKCAPIL_PUBLIC_URL', 'https://dukcapil.gorontalokab.go.id'),
     'service_url' => env('DUKCAPIL_SERVICE_URL', 'https://siprima.gorontalokab.go.id/'),
+    'service_hours' => 'Senin–Jumat, 08.00–15.30 WITA',
     'seo' => [
         'description' => 'Portal informasi resmi Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo.',
         'social_image' => env('DUKCAPIL_SOCIAL_IMAGE', 'https://dukcapil.gorontalokab.go.id/images/dukcapil_.jpeg'),
@@ -12,9 +13,12 @@ return [
     'uploads' => [
         'image_max_kilobytes' => 1024,
     ],
+    'maintenance' => [
+        'web_migrations_enabled' => env('DUKCAPIL_WEB_MIGRATIONS_ENABLED', false),
+    ],
     'office' => [
         'address' => "Jalan Kolonel Rauf Mo'o, Limboto, Kabupaten Gorontalo, Gorontalo 96212",
-        'email' => env('DUKCAPIL_CONTACT_EMAIL', 'dukcapil@gorontalokab.go.id'),
+        'email' => env('DUKCAPIL_CONTACT_EMAIL', 'dkpskabgor@gmail.com'),
         'phone' => env('DUKCAPIL_CONTACT_PHONE', '+62 812-4342-5557'),
         'hours' => 'Senin–Jumat, pendaftaran antrean 08.00–14.00 WITA',
         'map_url' => 'https://www.google.com/maps/search/?api=1&query=Dinas+Dukcapil+Kabupaten+Gorontalo',
