@@ -88,33 +88,35 @@ class WhistleblowingIntegrationTest extends TestCase
         $this->assertDatabaseCount('whistleblowing_publications', 1);
     }
 
-    public function test_public_page_displays_only_active_records_and_escapes_imported_text(): void
+    public function test_public_page_displays_official_complaint_channels_and_infographic(): void
     {
-        WhistleblowingSyncState::query()->create([
-            'source' => 'siprima',
-            'last_succeeded_at' => now(),
-            'last_item_count' => 2,
-        ]);
-        $visible = WhistleblowingPublication::factory()->create([
-            'category_code' => 'diskriminasi',
-            'category_label' => 'Diskriminasi Pelayanan',
-            'summary' => '<script>alert("ringkasan")</script> Ringkasan anonim yang sudah disetujui untuk publikasi.',
-            'follow_up_result' => 'Petugas telah melakukan evaluasi dan perbaikan prosedur pelayanan kepada masyarakat.',
-        ]);
-        $withdrawn = WhistleblowingPublication::factory()->withdrawn()->create([
-            'summary' => 'Publikasi yang sudah ditarik dari SI PRIMA.',
-        ]);
-
-        $response = $this->get(route('whistleblowing.index', ['kategori' => 'diskriminasi']));
+        $response = $this->get(route('whistleblowing.index'));
 
         $response
-            ->assertOk()
-            ->assertSee($visible->publication_id)
-            ->assertSee('Diskriminasi Pelayanan')
-            ->assertSee('&lt;script&gt;alert(&quot;ringkasan&quot;)&lt;/script&gt;', false)
-            ->assertDontSee('<script>alert("ringkasan")</script>', false)
-            ->assertDontSee($withdrawn->publication_id)
-            ->assertSee('Terakhir diperbarui');
+            ->assertSee('0811434356')
+            ->assertSee('href="https://wa.me/62811434356" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('081243425557')
+            ->assertSee('href="https://wa.me/6281243425557" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="'.config('dukcapil.complaints.siprima_whistleblowing_url').'" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="https://siprima.gorontalokab.go.id/informasi_whistleblowing.php" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="https://www.lapor.go.id/" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('src="'.asset('images/alur-pengaduan-whistleblowing.png').'"', false)
+            ->assertSee('alt="Diagram sebelas langkah alur pengaduan whistleblowing SI PRIMA, mulai dari membuka aplikasi hingga publikasi hasil secara anonim"', false)
+            ->assertDontSee('aria-hidden="true">WA</span>', false)
+            ->assertDontSee('aria-hidden="true">1</span>', false)
+            ->assertDontSee('aria-hidden="true">2</span>', false)
+            ->assertDontSee('aria-hidden="true">!</span>', false)
+            ->assertDontSee('Data belum pernah disinkronkan');
+
+        $content = $response->getContent();
+        $infographicPosition = strpos($content, 'images/alur-pengaduan-whistleblowing.png');
+        $complaintNumberPosition = strpos($content, '0811434356');
+
+        $this->assertIsInt($infographicPosition);
+        $this->assertIsInt($complaintNumberPosition);
+        $this->assertLessThan($complaintNumberPosition, $infographicPosition);
+        $this->assertGreaterThanOrEqual(5, substr_count($content, '<svg'));
+        $this->assertFileExists(public_path('images/alur-pengaduan-whistleblowing.png'));
     }
 
     /**

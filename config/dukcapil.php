@@ -6,6 +6,15 @@ return [
     'public_url' => env('DUKCAPIL_PUBLIC_URL', 'https://dukcapil.gorontalokab.go.id'),
     'service_url' => env('DUKCAPIL_SERVICE_URL', 'https://siprima.gorontalokab.go.id/'),
     'service_hours' => 'Senin–Jumat, 08.00–15.30 WITA',
+    'complaints' => [
+        'whatsapp_number' => '0811434356',
+        'whatsapp_url' => 'https://wa.me/62811434356',
+        'identity_consultation_number' => '081243425557',
+        'identity_consultation_url' => 'https://wa.me/6281243425557',
+        'siprima_whistleblowing_url' => env('DUKCAPIL_SERVICE_URL', 'https://siprima.gorontalokab.go.id/'),
+        'siprima_whistleblowing_publications_url' => 'https://siprima.gorontalokab.go.id/informasi_whistleblowing.php',
+        'sp4n_lapor_url' => 'https://www.lapor.go.id/',
+    ],
     'seo' => [
         'description' => 'Portal informasi resmi Dinas Kependudukan dan Pencatatan Sipil Kabupaten Gorontalo.',
         'social_image' => env('DUKCAPIL_SOCIAL_IMAGE', 'https://dukcapil.gorontalokab.go.id/images/dukcapil_.jpeg'),
