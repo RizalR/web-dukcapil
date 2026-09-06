@@ -10,6 +10,24 @@
             <p class="mt-5 text-base leading-7 sm:text-lg sm:leading-8">Portal ini tidak menerima pengajuan dokumen. Untuk Kartu Keluarga, akta pencatatan sipil, dan layanan administrasi kependudukan lainnya, gunakan aplikasi layanan resmi.</p>
         </div>
 
+        <article class="card mt-8 sm:mt-10 flex flex-col border-t-4 border-t-ocean p-5 sm:p-6">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <span class="flex size-16 sm:size-20 shrink-0 items-center justify-center rounded-2xl bg-sky-soft text-ocean ring-1 ring-sky-200 ring-inset" aria-hidden="true">
+                    <svg class="size-9 sm:size-11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 11.5a8 8 0 0 1-11.82 7.03L4 19.75l1.2-4.08A8 8 0 1 1 20 11.5Z" />
+                        <path d="M8.25 8.25c.3 3.85 3.65 7.2 7.5 7.5l1-1.7-2.45-1.15-.85 1c-1.45-.63-2.72-1.9-3.35-3.35l1-.85-1.15-2.45z" />
+                    </svg>
+                </span>
+                <div>
+                    <p class="text-xs font-bold tracking-[.16em] text-ocean uppercase">Validasi dan konsultasi</p>
+                    <h2 class="mt-2 text-xl font-bold text-ink">Validasi NIK dan konsultasi adminduk</h2>
+                </div>
+            </div>
+            <p class="mt-3 flex-1 text-sm leading-6">Hubungi petugas untuk memperoleh arahan validasi NIK atau berkonsultasi mengenai administrasi kependudukan.</p>
+            <p class="mt-5 text-2xl font-black text-ink">{{ config('dukcapil.complaints.identity_consultation_number') }}</p>
+            <a href="{{ config('dukcapil.complaints.identity_consultation_url') }}" target="_blank" rel="noopener noreferrer" class="btn-primary mt-5 w-full sm:w-auto sm:self-start" aria-label="Hubungi WhatsApp validasi NIK dan konsultasi administrasi kependudukan di 081243425557">Hubungi nomor konsultasi ↗</a>
+        </article>
+
         <section class="mt-8 rounded-3xl bg-sky-soft p-5 sm:mt-10 sm:p-7 lg:p-8" aria-labelledby="printing-status-title">
             <p class="eyebrow">Informasi pelayanan terkini</p>
             <h2 id="printing-status-title" class="mt-2 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Status pencetakan KTP-el dan KIA</h2>

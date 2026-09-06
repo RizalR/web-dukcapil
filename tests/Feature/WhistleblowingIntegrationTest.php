@@ -95,8 +95,8 @@ class WhistleblowingIntegrationTest extends TestCase
         $response
             ->assertSee('0811434356')
             ->assertSee('href="https://wa.me/62811434356" target="_blank" rel="noopener noreferrer"', false)
-            ->assertSee('081243425557')
-            ->assertSee('href="https://wa.me/6281243425557" target="_blank" rel="noopener noreferrer"', false)
+            ->assertDontSee('081243425557')
+            ->assertDontSee('href="https://wa.me/6281243425557"', false)
             ->assertSee('href="'.config('dukcapil.complaints.siprima_whistleblowing_url').'" target="_blank" rel="noopener noreferrer"', false)
             ->assertSee('href="https://siprima.gorontalokab.go.id/informasi_whistleblowing.php" target="_blank" rel="noopener noreferrer"', false)
             ->assertSee('href="https://www.lapor.go.id/" target="_blank" rel="noopener noreferrer"', false)
@@ -115,7 +115,7 @@ class WhistleblowingIntegrationTest extends TestCase
         $this->assertIsInt($infographicPosition);
         $this->assertIsInt($complaintNumberPosition);
         $this->assertLessThan($complaintNumberPosition, $infographicPosition);
-        $this->assertGreaterThanOrEqual(5, substr_count($content, '<svg'));
+        $this->assertGreaterThanOrEqual(4, substr_count($content, '<svg'));
         $this->assertFileExists(public_path('images/alur-pengaduan-whistleblowing.png'));
     }
 

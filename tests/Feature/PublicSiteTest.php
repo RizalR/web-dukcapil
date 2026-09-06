@@ -224,6 +224,9 @@ class PublicSiteTest extends TestCase
         $response = $this->get(route('services'));
 
         $response
+            ->assertSee('Validasi NIK dan konsultasi adminduk')
+            ->assertSee('081243425557')
+            ->assertSee('href="https://wa.me/6281243425557" target="_blank" rel="noopener noreferrer"', false)
             ->assertSee('Jam Pelayanan SI PRIMA')
             ->assertSee('Senin–Jumat, 08.00–15.30 WITA')
             ->assertSee('dkpskabgor@gmail.com')

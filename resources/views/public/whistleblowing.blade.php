@@ -30,10 +30,10 @@
         <div class="max-w-3xl">
             <p class="eyebrow">Kontak WhatsApp</p>
             <h2 id="kontak-whatsapp-title" class="section-title mt-2">Hubungi nomor sesuai kebutuhan</h2>
-            <p class="mt-3 text-sm leading-6 sm:text-base sm:leading-7">Gunakan nomor pengaduan hanya untuk menyampaikan keluhan. Validasi NIK dan konsultasi administrasi kependudukan dilayani melalui nomor konsultasi.</p>
+            <p class="mt-3 text-sm leading-6 sm:text-base sm:leading-7">Gunakan nomor pengaduan hanya untuk menyampaikan keluhan. Validasi NIK dan konsultasi administrasi kependudukan tersedia di <a href="{{ route('services') }}" class="font-bold text-ocean underline underline-offset-4">halaman pelayanan</a>.</p>
         </div>
 
-        <div class="mt-6 grid gap-5 md:grid-cols-2">
+        <div class="mt-6 grid gap-5">
             <article class="card flex flex-col border-t-4 border-t-emerald-500 p-5 sm:p-6">
                 <div class="flex items-center gap-4">
                     <span class="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200 ring-inset" aria-hidden="true">
@@ -52,23 +52,7 @@
                 <a href="{{ config('dukcapil.complaints.whatsapp_url') }}" target="_blank" rel="noopener noreferrer" class="btn-primary mt-5" aria-label="Hubungi WhatsApp khusus pengaduan Dukcapil di 0811434356">Hubungi nomor pengaduan ↗</a>
             </article>
 
-            <article class="card flex flex-col border-t-4 border-t-ocean p-5 sm:p-6">
-                <div class="flex items-center gap-4">
-                    <span class="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-2xl bg-sky-soft text-ocean ring-1 ring-sky-200 ring-inset" aria-hidden="true">
-                        <svg class="h-14 w-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 11.5a8 8 0 0 1-11.82 7.03L4 19.75l1.2-4.08A8 8 0 1 1 20 11.5Z" />
-                            <path d="M8.25 8.25c.3 3.85 3.65 7.2 7.5 7.5l1-1.7-2.45-1.15-.85 1c-1.45-.63-2.72-1.9-3.35-3.35l1-.85-1.15-2.45z" />
-                        </svg>
-                    </span>
-                    <div>
-                        <p class="text-xs font-bold tracking-[.16em] text-ocean uppercase">Validasi dan konsultasi</p>
-                        <h3 class="mt-2 text-xl font-bold text-ink">Validasi NIK dan konsultasi adminduk</h3>
-                    </div>
-                </div>
-                <p class="mt-3 flex-1 text-sm leading-6">Hubungi petugas untuk memperoleh arahan validasi NIK atau berkonsultasi mengenai administrasi kependudukan.</p>
-                <p class="mt-5 text-2xl font-black text-ink">{{ config('dukcapil.complaints.identity_consultation_number') }}</p>
-                <a href="{{ config('dukcapil.complaints.identity_consultation_url') }}" target="_blank" rel="noopener noreferrer" class="btn-primary mt-5" aria-label="Hubungi WhatsApp validasi NIK dan konsultasi administrasi kependudukan di 081243425557">Hubungi nomor konsultasi ↗</a>
-            </article>
+
         </div>
     </section>
 

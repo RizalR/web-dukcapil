@@ -56,15 +56,15 @@
     <a href="#konten-utama" class="sr-only z-50 rounded bg-white px-4 py-2 focus:not-sr-only focus:fixed focus:top-4 focus:left-4">Lewati ke konten utama</a>
 
     <div class="bg-ocean-deep text-white">
-        <div class="container-page flex min-h-10 items-center justify-between gap-4 py-2 text-xs sm:text-sm">
+        <div class="container-page flex min-h-10 flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-4 py-2 text-xs sm:text-sm">
             <p>Portal informasi resmi Dukcapil Kabupaten Gorontalo</p>
             <a href="{{ config('dukcapil.service_url') }}" target="_blank" rel="noopener noreferrer" class="font-bold text-amber-300 hover:text-white">Buka layanan SI PRIMA ↗</a>
         </div>
     </div>
 
     <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div class="container-page flex min-h-20 items-center justify-between gap-5">
-            <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="Beranda Dukcapil Kabupaten Gorontalo">
+        <div class="container-page flex min-h-20 items-center justify-between gap-3 py-3 sm:gap-5">
+            <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3" aria-label="Beranda Dukcapil Kabupaten Gorontalo">
                 <img src="{{ asset('images/logo_kabgor.png') }}" alt="Lambang Kabupaten Gorontalo" width="40" height="46" class="shrink-0">
                 <span class="leading-tight"><strong class="block text-sm text-ink sm:text-base">Dinas Kependudukan dan Pencatatan Sipil</strong><span class="text-xs text-slate-500 sm:text-sm">Kabupaten Gorontalo</span></span>
             </a>
@@ -76,7 +76,7 @@
                 @endforeach
             </nav>
 
-            <button type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu" class="grid size-11 place-items-center rounded-xl border border-slate-300 text-ink lg:hidden">
+            <button type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-menu" class="grid size-11 shrink-0 place-items-center rounded-xl border border-slate-300 text-ink lg:hidden">
                 <span class="sr-only">Buka navigasi</span><span class="text-xl">☰</span>
             </button>
         </div>
