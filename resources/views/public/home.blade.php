@@ -4,9 +4,9 @@
 @section('meta_description', 'Informasi kependudukan, berita, status pencetakan KTP-el dan KIA, serta dokumen publik Dukcapil Kabupaten Gorontalo.')
 @section('content')
 <section class="relative overflow-hidden bg-ink text-white">
-    <img src="{{ $homepageBackgroundUrl }}" alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 size-full object-cover object-center">
-    <div class="absolute inset-0 bg-ink/80"></div>
-    <div class="hero-glow absolute inset-0"></div>
+    <img src="{{ $homepageBackgroundUrl }}" alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 h-full w-full object-cover object-center max-lg:static max-lg:block max-lg:h-auto max-lg:object-contain">
+    <div class="absolute inset-0 bg-ink/80 max-lg:hidden"></div>
+    <div class="hero-glow absolute inset-0 max-lg:hidden"></div>
     <div class="container-page relative grid gap-6 py-10 sm:gap-10 sm:py-16 lg:grid-cols-[1.25fr_.75fr] lg:py-24">
         <div>
             <p class="text-sm font-bold tracking-[0.2em] text-amber-300 uppercase">Sistem Informasi Pelayanan Publik</p>
