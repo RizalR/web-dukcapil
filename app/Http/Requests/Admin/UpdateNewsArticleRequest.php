@@ -34,7 +34,24 @@ class UpdateNewsArticleRequest extends FormRequest
             'body' => ['required', 'string', 'max:50000'],
             'status' => ['required', Rule::enum(NewsStatus::class)],
             'is_featured' => ['sometimes', 'boolean'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'extensions:jpg,jpeg,png,webp', 'max:2048', 'prohibited_if:remove_image,1'],
+            'image_alt' => ['nullable', Rule::requiredIf(! $this->boolean('remove_image') && ($this->hasFile('image') || $this->route('news_article')?->image_path !== null)), 'string', 'max:255'],
+            'image_caption' => ['nullable', 'string', 'max:320'],
+            'remove_image' => ['sometimes', 'boolean'],
             'source_url' => ['nullable', 'url:http,https', 'max:2048'],
+        ];
+    }
+
+    /** @return array<string, string> */
+    public function messages(): array
+    {
+        return [
+            'image.image' => 'Berkas harus berupa gambar JPG, PNG, atau WebP.',
+            'image.mimes' => 'Format gambar harus JPG, PNG, atau WebP.',
+            'image.extensions' => 'Ekstensi gambar harus JPG, PNG, atau WebP.',
+            'image.max' => 'Ukuran gambar maksimal 2 MB.',
+            'image.prohibited_if' => 'Pilih ganti gambar atau hapus gambar, bukan keduanya.',
+            'image_alt.required' => 'Teks alternatif wajib diisi jika berita memiliki gambar.',
         ];
     }
 }

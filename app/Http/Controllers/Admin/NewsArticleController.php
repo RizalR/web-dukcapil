@@ -10,6 +10,10 @@ use App\NewsStatus;
 use App\Services\AuditLogger;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
+use RuntimeException;
+use Throwable;
 
 class NewsArticleController extends Controller
 {
@@ -38,11 +42,32 @@ class NewsArticleController extends Controller
      */
     public function store(StoreNewsArticleRequest $request, AuditLogger $auditLogger): RedirectResponse
     {
-        $data = $request->validated();
+        $data = Arr::except($request->validated(), ['image']);
         $data['author_id'] = $request->user()->id;
         $data['is_featured'] = $request->boolean('is_featured');
         $data = $this->enforcePublishingRules($data, $request->user()->isSuperAdmin());
-        $article = NewsArticle::query()->create($data);
+        $imagePath = $request->hasFile('image') ? $request->file('image')->store('news', 'public') : null;
+
+        if ($imagePath === false) {
+            throw new RuntimeException('Gambar berita tidak dapat disimpan.');
+        }
+
+        $data['image_path'] = $imagePath;
+
+        if ($imagePath === null) {
+            $data['image_alt'] = null;
+            $data['image_caption'] = null;
+        }
+
+        try {
+            $article = NewsArticle::query()->create($data);
+        } catch (Throwable $exception) {
+            if ($imagePath !== null) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            throw $exception;
+        }
         $auditLogger->record('news.created', "Berita {$article->title} dibuat.", $article, ['status' => $article->status->value]);
 
         return redirect()->route('admin.news-articles.index')->with('status', 'Berita berhasil dibuat.');
@@ -71,10 +96,36 @@ class NewsArticleController extends Controller
      */
     public function update(UpdateNewsArticleRequest $request, NewsArticle $newsArticle, AuditLogger $auditLogger): RedirectResponse
     {
-        $data = $request->validated();
+        $data = Arr::except($request->validated(), ['image', 'remove_image']);
         $data['is_featured'] = $request->boolean('is_featured');
         $data = $this->enforcePublishingRules($data, $request->user()->isSuperAdmin());
-        $newsArticle->update($data);
+        $oldImagePath = $newsArticle->image_path;
+        $newImagePath = $request->hasFile('image') ? $request->file('image')->store('news', 'public') : null;
+
+        if ($newImagePath === false) {
+            throw new RuntimeException('Gambar berita tidak dapat disimpan.');
+        }
+
+        $data['image_path'] = $request->boolean('remove_image') ? null : ($newImagePath ?? $oldImagePath);
+
+        if ($data['image_path'] === null) {
+            $data['image_alt'] = null;
+            $data['image_caption'] = null;
+        }
+
+        try {
+            $newsArticle->update($data);
+        } catch (Throwable $exception) {
+            if ($newImagePath !== null) {
+                Storage::disk('public')->delete($newImagePath);
+            }
+
+            throw $exception;
+        }
+
+        if ($oldImagePath !== null && $oldImagePath !== $data['image_path']) {
+            Storage::disk('public')->delete($oldImagePath);
+        }
         $auditLogger->record('news.updated', "Berita {$newsArticle->title} diperbarui.", $newsArticle, ['status' => $newsArticle->status->value]);
 
         return redirect()->route('admin.news-articles.index')->with('status', 'Berita berhasil diperbarui.');
@@ -88,7 +139,12 @@ class NewsArticleController extends Controller
         $this->authorize('delete', $newsArticle);
         $title = $newsArticle->title;
         $auditLogger->record('news.deleted', "Berita {$title} dihapus.", $newsArticle);
+        $imagePath = $newsArticle->image_path;
         $newsArticle->delete();
+
+        if ($imagePath !== null) {
+            Storage::disk('public')->delete($imagePath);
+        }
 
         return redirect()->route('admin.news-articles.index')->with('status', 'Berita berhasil dihapus.');
     }

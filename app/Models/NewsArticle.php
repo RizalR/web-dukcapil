@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['author_id', 'title', 'slug', 'excerpt', 'body', 'status', 'is_featured', 'source_url', 'published_at'])]
+#[Fillable(['author_id', 'title', 'slug', 'excerpt', 'body', 'status', 'is_featured', 'source_url', 'published_at', 'image_path', 'image_alt', 'image_caption'])]
 class NewsArticle extends Model
 {
     /** @use HasFactory<NewsArticleFactory> */

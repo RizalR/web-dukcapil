@@ -1,4 +1,73 @@
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-news-image]').forEach((container) => {
+        const input = container.querySelector('[data-news-image-input]');
+        const preview = container.querySelector('[data-news-image-preview]');
+        const remove = container.querySelector('[data-news-image-remove]');
+        const error = container.querySelector('[data-news-image-error]');
+        const alt = container.querySelector('[name="image_alt"]');
+        const originalSource = preview.getAttribute('src');
+        let reader;
+
+        preview.addEventListener('error', () => {
+            if (preview.getAttribute('src')) {
+                error.textContent = 'Gambar tidak dapat dimuat. Coba muat ulang halaman atau pilih kembali gambar.';
+            }
+        });
+
+        const updatePreview = () => {
+            reader?.abort();
+            const file = input.files[0];
+            const removing = remove?.checked;
+            alt.required = !removing && Boolean(file || originalSource);
+            preview.classList.toggle('hidden', removing || (!file && !originalSource));
+            error.textContent = '';
+
+            if (removing) {
+                return;
+            }
+
+            if (!file) {
+                if (originalSource) {
+                    preview.src = originalSource;
+                } else {
+                    preview.removeAttribute('src');
+                }
+                return;
+            }
+
+            if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 2 * 1024 * 1024) {
+                preview.classList.add('hidden');
+                error.textContent = 'Pilih gambar JPG, PNG, atau WebP dengan ukuran maksimal 2 MB.';
+                return;
+            }
+
+            reader = new FileReader();
+            reader.addEventListener('load', () => {
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+            });
+            reader.addEventListener('error', () => {
+                preview.classList.add('hidden');
+                error.textContent = 'Gambar tidak dapat dibaca. Pilih kembali gambar dari perangkat Anda.';
+            });
+            reader.readAsDataURL(file);
+        };
+
+        input.addEventListener('change', () => {
+            if (remove && input.files.length) {
+                remove.checked = false;
+            }
+            updatePreview();
+        });
+        remove?.addEventListener('change', () => {
+            if (remove.checked) {
+                input.value = '';
+            }
+            updatePreview();
+        });
+        updatePreview();
+    });
+
     const toggle = document.querySelector('[data-menu-toggle]');
     const menu = document.querySelector('[data-mobile-menu]');
 

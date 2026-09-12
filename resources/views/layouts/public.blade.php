@@ -8,7 +8,9 @@
         $canonicalUrl = trim($__env->yieldContent('canonical_url')) ?: $siteUrl.(request()->getPathInfo() === '/' ? '/' : request()->getPathInfo());
         $robots = trim($__env->yieldContent('robots', 'index,follow,max-image-preview:large'));
         $openGraphType = trim($__env->yieldContent('og_type', 'website'));
-        $socialImage = (string) config('dukcapil.seo.social_image');
+        $socialImage = trim($__env->yieldContent('social_image')) ?: (string) config('dukcapil.seo.social_image');
+        $socialImage = str_starts_with($socialImage, '/') ? $siteUrl.$socialImage : $socialImage;
+        $socialImageAlt = html_entity_decode(trim($__env->yieldContent('social_image_alt', 'Dinas Dukcapil Kabupaten Gorontalo')), ENT_QUOTES, 'UTF-8');
         $organizationSchema = [
             '@context' => 'https://schema.org',
             '@type' => 'GovernmentOrganization',
@@ -40,11 +42,12 @@
     <meta property="og:description" content="{{ $metaDescription }}">
     <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:image" content="{{ $socialImage }}">
-    <meta property="og:image:alt" content="Dinas Dukcapil Kabupaten Gorontalo">
+    <meta property="og:image:alt" content="{{ $socialImageAlt }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $pageTitle }}">
     <meta name="twitter:description" content="{{ $metaDescription }}">
     <meta name="twitter:image" content="{{ $socialImage }}">
+    <meta name="twitter:image:alt" content="{{ $socialImageAlt }}">
     @hasSection('article_published_time')
         <meta property="article:published_time" content="@yield('article_published_time')">
     @endif
